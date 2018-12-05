@@ -21,16 +21,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.delegate = self
         
         // Create a 3D object
-        let cube = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0.01)
+        //let cube = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0.01)
+        
+        // Create a sphere
+        let sphere = SCNSphere(radius: 0.2)
         
         // Create a material
         let material = SCNMaterial()
         
         // Select the color
-        material.diffuse.contents = UIColor.red
+        material.diffuse.contents = UIImage(named: "art.scnassets/moon.jpg")
         
         // Set the color to the 3D object
-        cube.materials = [material]
+        sphere.materials = [material]
         
         // Create the node(node = points in 3D space)
         let node = SCNNode()
@@ -39,7 +42,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         node.position = SCNVector3(x: 0, y: 0.1, z: -0.5)
         
         // Set the node to the 3D object
-        node.geometry = cube
+        node.geometry = sphere
         
         // Add the node into the scene
         sceneView.scene.rootNode.addChildNode(node)
