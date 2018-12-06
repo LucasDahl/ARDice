@@ -54,19 +54,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         
         
-//        // Create a new 3D Object
-//        let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")!
-//
-//        // Create the dice node (recursively allows to include all the child nodes in the tree(file))
-//        if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
-//
-//            // Gice the diceNode a position
-//            diceNode.position = SCNVector3(x: 0, y: 0, z: -0.1)
-//
-//            // Add the node to the scene
-//            sceneView.scene.rootNode.addChildNode(diceNode)
-//
-//        }
+
 
     }
     
@@ -102,13 +90,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // Convert the 2D location into a 3D location
             let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
             
-            if !results.isEmpty {
-                print("You touched the plane")
-            } else {
-                print("Touched somewhere but the plane")
-            }
+            // Check for a hit result
+            if let hitResult = results.first {
+                
+                // Create a new 3D Object
+                let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")!
+                
+                // Create the dice node (recursively allows to include all the child nodes in the tree(file))
+                if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
+                    
+                    // Gice the diceNode a position
+                    diceNode.position = SCNVector3(x: hitResult.worldTransform.columns.3.x, y: hitResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius, z: hitResult.worldTransform.columns.3.y)
+                    
+                    // Add the node to the scene
+                    sceneView.scene.rootNode.addChildNode(diceNode)
+                    
+                } // End if let
+                
+            } // End if let
             
-        }
+        } // end if let
         
     }
     
