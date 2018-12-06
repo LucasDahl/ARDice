@@ -137,12 +137,35 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
     }
     
+    //==================
+    // MARK: - IBActions
+    //==================
+    
     // Reroll butoon pressed
     @IBAction func rollAgain(_ sender: UIBarButtonItem) {
         
         rollAll()
         
     }
+    
+    
+    @IBAction func removeAllDice(_ sender: UIBarButtonItem) {
+        
+        // If the diceArray is not empty
+        if !diceArray.isEmpty {
+            
+            for dice in diceArray {
+                
+                // Removes the dice
+                dice.removeFromParentNode()
+                
+            }
+            
+        }
+        
+    }
+    
+    
     
     // Rolls the dice when the phon is shooken
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
