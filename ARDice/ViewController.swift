@@ -17,6 +17,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Shows ar trying to detect a plane
+        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+        
         // Set the view's delegate
         sceneView.delegate = self
         
@@ -51,19 +54,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         
         
-        // Create a new 3D Object
-        let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")!
-        
-        // Create the dice node (recursively allows to include all the child nodes in the tree(file))
-        if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
-            
-            // Gice the diceNode a position
-            diceNode.position = SCNVector3(x: 0, y: 0, z: -0.1)
-            
-            // Add the node to the scene
-            sceneView.scene.rootNode.addChildNode(diceNode)
-            
-        }
+//        // Create a new 3D Object
+//        let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")!
+//
+//        // Create the dice node (recursively allows to include all the child nodes in the tree(file))
+//        if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
+//
+//            // Gice the diceNode a position
+//            diceNode.position = SCNVector3(x: 0, y: 0, z: -0.1)
+//
+//            // Add the node to the scene
+//            sceneView.scene.rootNode.addChildNode(diceNode)
+//
+//        }
 
     }
     
@@ -72,9 +75,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+        
+        // configure planeDetection (horzontal)
+        configuration.planeDetection = .horizontal
 
         // Run the view's session
         sceneView.session.run(configuration)
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -84,4 +91,45 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
 
-}
+    
+    // Detect the horizontal surface
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        
+        // Check if the Anchor is a plane
+        if anchor is ARPlaneAnchor {
+            
+            // Down cast into ARPlaneAnchor
+            let planeAnchor = anchor as! ARPlaneAnchor
+            
+            // Convert the dims of the anchor to a scene plan
+            let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
+            
+            // Create a plane node
+            let planeNode = SCNNode()
+            
+            // Set the nodes position
+            planeNode.position = SCNVector3(planeAnchor.center.x, 0, planeAnchor.center.z)
+            
+            // Transform the planeNode and rotate 90 degrees
+            planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)
+            
+            // Create a material so the user can see the plane and set the plane material
+            let gridMaterial = SCNMaterial()
+            gridMaterial.diffuse.contents = UIImage(named: "art.scnassets/grid.png")
+            plane.materials = [gridMaterial]
+            
+            // Set the planeNode gemometry
+            planeNode.geometry = plane
+            
+            // Add the node to the scene
+            node.addChildNode(planeNode)
+            
+        } else {
+            
+            return
+            
+        }
+        
+    }
+    
+} // End class
