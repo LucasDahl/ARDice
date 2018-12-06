@@ -51,6 +51,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Pause the view's session
         sceneView.session.pause()
+        
     }
     
     //====================
@@ -91,7 +92,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             diceNode.position = SCNVector3(
                 x: location.worldTransform.columns.3.x,
                 y: location.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
-                z: location.worldTransform.columns.3.y)
+                z: location.worldTransform.columns.3.z)
             
             // Appened th ecreated dice to the array
             diceArray.append(diceNode)
