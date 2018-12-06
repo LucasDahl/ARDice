@@ -91,6 +91,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
 
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        // Check if there was a touch
+        if let touch = touches.first {
+            
+            // Find th etouch location
+            let touchLocation = touch.location(in: sceneView)
+            
+            // Convert the 2D location into a 3D location
+            let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
+            
+            if !results.isEmpty {
+                print("You touched the plane")
+            } else {
+                print("Touched somewhere but the plane")
+            }
+            
+        }
+        
+    }
     
     // Detect the horizontal surface
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
