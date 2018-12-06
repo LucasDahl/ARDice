@@ -105,6 +105,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     // Add the node to the scene
                     sceneView.scene.rootNode.addChildNode(diceNode)
                     
+                    // Get a random numbers
+                    let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+                    let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+                    
+                    // Run the numbers as an animation
+                    diceNode.runAction(SCNAction.rotateBy(x: CGFloat(randomX * 5), y: 0, z: CGFloat(randomZ * 5), duration: 0.5))
+                    
                 } // End if let
                 
             } // End if let
