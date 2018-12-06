@@ -11,6 +11,10 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
+    
+    // Properties
+    var diceArray = [SCNNode]()
+    
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -102,21 +106,61 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     // Gice the diceNode a position
                     diceNode.position = SCNVector3(x: hitResult.worldTransform.columns.3.x, y: hitResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius, z: hitResult.worldTransform.columns.3.y)
                     
+                    // Appened th ecreated dice to the array
+                    diceArray.append(diceNode)
+                    
                     // Add the node to the scene
                     sceneView.scene.rootNode.addChildNode(diceNode)
                     
-                    // Get a random numbers
-                    let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
-                    let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
-                    
-                    // Run the numbers as an animation
-                    diceNode.runAction(SCNAction.rotateBy(x: CGFloat(randomX * 5), y: 0, z: CGFloat(randomZ * 5), duration: 0.5))
+                    // Roll the dice
+                    roll(dice: diceNode)
                     
                 } // End if let
                 
             } // End if let
             
         } // end if let
+        
+    } // End touchBegan
+    
+    func rollAll() {
+        
+        if !diceArray.isEmpty {
+            
+            for dice in diceArray {
+                
+                roll(dice: dice)
+                
+            }
+            
+        }
+        
+    }
+    
+    // Reroll butoon pressed
+    @IBAction func rollAgain(_ sender: UIBarButtonItem) {
+        
+        rollAll()
+        
+    }
+    
+    // Rolls the dice when the phon is shooken
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        rollAll()
+        
+    }
+    
+    
+    // Roll the dice
+    func roll(dice: SCNNode) {
+        
+        // Get a random numbers
+        let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+        let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+        
+        // Run the numbers as an animation
+        dice.runAction(SCNAction.rotateBy(x: CGFloat(randomX * 5), y: 0, z: CGFloat(randomZ * 5), duration: 0.5))
         
     }
     
